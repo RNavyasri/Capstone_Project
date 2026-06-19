@@ -1,0 +1,42 @@
+<div class="page-shell">
+  <button class="back-btn" routerLink="/dashboard">← Back</button>
+
+  <div class="transfer-card">
+    <div class="transfer-header">
+      <div>
+        <p class="eyebrow">Secure Transfer</p>
+        <h2>Send Money</h2>
+      </div>
+      <span class="status-pill">Fast & Safe</span>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <label>From Account ID</label>
+      <input [(ngModel)]="senderId" name="senderId" type="number" placeholder="Enter sender account ID" />
+
+      <label>To Account ID</label>
+      <input [(ngModel)]="receiverId" name="receiverId" type="number" placeholder="Enter receiver account ID" />
+
+      <label>Amount</label>
+      <input [(ngModel)]="amount" name="amount" type="number" step="0.01" placeholder="0.00" />
+
+      <label>Description</label>
+      <textarea [(ngModel)]="description" name="description" rows="3" placeholder="Optional note for this transfer"></textarea>
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Processing transfer...' : 'Confirm Transfer' }}
+      </button>
+
+      <p class="message" [ngClass]="isError ? 'error' : 'success'" *ngIf="message">{{ message }}</p>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="showDialog">
+    <div class="modal-card" [ngClass]="dialogType">
+      <div class="modal-icon">{{ dialogType === 'success' ? '✓' : '!' }}</div>
+      <h3>{{ dialogTitle }}</h3>
+      <p>{{ dialogMessage }}</p>
+      <button class="modal-btn" (click)="closeDialog()">OK</button>
+    </div>
+  </div>
+</div>

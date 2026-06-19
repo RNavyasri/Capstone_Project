@@ -1,0 +1,18 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="brand">
+      <div class="coin-icon">💰</div>
+      <h2>Money Transfer System</h2>
+    </div>
+    <form (ngSubmit)="login()">
+      <label>Username</label>
+      <input [(ngModel)]="username" name="username" placeholder="Enter username" />
+
+      <label>Password</label>
+      <input [(ngModel)]="password" name="password" type="password" placeholder="Enter password" />
+
+      <button type="submit">Login</button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+  </div>
+</div>

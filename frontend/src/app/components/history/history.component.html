@@ -1,0 +1,30 @@
+<div class="page-shell">
+  <button class="back-btn" routerLink="/dashboard">← Back</button>
+  <div class="history-card">
+    <h2>Transaction History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Amount</th>
+          <th>Type</th>
+          <th>Rewards</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tx of transactions">
+          <td>{{ tx.transactionId }}</td>
+          <td>{{ tx.fromAccount }}</td>
+          <td>{{ tx.toAccount }}</td>
+          <td>{{ tx.amount }}</td>
+          <td>{{ tx.transactionType }}</td>
+          <td>{{ tx.rewardsEarned }}</td>
+          <td>{{ tx.createdAt }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

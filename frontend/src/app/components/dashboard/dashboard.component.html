@@ -1,0 +1,48 @@
+<div class="dashboard-page">
+  <header class="top-nav">
+    <div class="nav-brand">💼 Finance Portal</div>
+    <nav>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <main class="dashboard-main">
+    <section class="welcome-panel">
+      <div>
+        <p class="eyebrow">Welcome Back</p>
+        <h1>{{ userName }}</h1>
+      </div>
+      <div class="coin-badge">🪙</div>
+    </section>
+
+    <section class="feature-grid">
+      <button class="feature-card" routerLink="/transfer">
+        <span>💸</span>
+        <strong>Transfer</strong>
+      </button>
+      <button class="feature-card" routerLink="/history">
+        <span>📜</span>
+        <strong>History</strong>
+      </button>
+      <button class="feature-card" routerLink="/rewards">
+        <span>🏆</span>
+        <strong>Rewards</strong>
+      </button>
+    </section>
+
+    <section class="balance-panel" *ngIf="account">
+      <div>
+        <p>Account ID</p>
+        <h2>{{ account.id }}</h2>
+      </div>
+      <div>
+        <p>Status</p>
+        <h3 [ngClass]="account.status.toLowerCase()">{{ account.status }}</h3>
+      </div>
+      <div>
+        <p>Balance</p>
+        <h2>${{ account.balance }}</h2>
+      </div>
+    </section>
+  </main>
+</div>
