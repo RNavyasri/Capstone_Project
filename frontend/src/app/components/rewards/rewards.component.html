@@ -1,13 +1,24 @@
 <div class="page-shell">
-  <button class="back-btn" routerLink="/dashboard">← Back</button>
+  <div class="rewards-header">
+    <button class="back-btn" routerLink="/dashboard">← Back</button>
+  </div>
+
   <div class="rewards-card">
-    <div class="reward-coin">🪙</div>
-    <h2>Rewards</h2>
-    <p class="username">{{ username }}</p>
+    <div class="reward-icon">🪙</div>
+    <p class="eyebrow">Rewards</p>
+    <h2>{{ username }}</h2>
+
     <div class="points-panel">
-      <h1>{{ rewardPoints }}</h1>
-      <span>points</span>
+      <span class="points-label">Available Points</span>
+      <div class="points-value-row">
+        <h1>{{ rewardPoints }}</h1>
+        <span>pts</span>
+      </div>
     </div>
-    <p class="updated">Last updated: {{ lastUpdated }}</p>
+
+    <div class="reward-footer">
+      <span>Last updated</span>
+      <strong>{{ lastUpdated || 'Not available yet' }}</strong>
+    </div>
   </div>
 </div>

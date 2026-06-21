@@ -13,6 +13,7 @@ export interface TransactionLog {
   toAccount: number;
   amount: number;
   transactionType: string;
+  status: string;
   rewardsEarned: number;
   createdAt: string;
 }

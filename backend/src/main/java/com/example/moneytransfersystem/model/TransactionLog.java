@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class TransactionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
+    @Column(name = "transaction_id", nullable = false, updatable = false)
     private Long transactionId;
 
     @Column(name = "from_account", nullable = false)
@@ -23,6 +23,9 @@ public class TransactionLog {
 
     @Column(name = "transaction_type", nullable = false)
     private String transactionType;
+
+    @Column(name = "status", nullable = false)
+    private String status;
 
     @Column(name = "rewards_earned", nullable = false)
     private Integer rewardsEarned;
@@ -40,6 +43,8 @@ public class TransactionLog {
     public void setAmount(BigDecimal amount) { this.amount = amount; }
     public String getTransactionType() { return transactionType; }
     public void setTransactionType(String transactionType) { this.transactionType = transactionType; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public Integer getRewardsEarned() { return rewardsEarned; }
     public void setRewardsEarned(Integer rewardsEarned) { this.rewardsEarned = rewardsEarned; }
     public LocalDateTime getCreatedAt() { return createdAt; }

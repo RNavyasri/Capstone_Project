@@ -5,7 +5,7 @@ import { Account, Reward, TransactionLog } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:8080/api';
+  private readonly baseUrl = 'http://localhost:8081/api';
 
   constructor(private http: HttpClient) {}
 

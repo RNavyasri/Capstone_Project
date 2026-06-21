@@ -1,30 +1,72 @@
 <div class="page-shell">
   <button class="back-btn" routerLink="/dashboard">← Back</button>
-  <div class="history-card">
-    <h2>Transaction History</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Transaction ID</th>
-          <th>From</th>
-          <th>To</th>
-          <th>Amount</th>
-          <th>Type</th>
-          <th>Rewards</th>
-          <th>Timestamp</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let tx of transactions">
-          <td>{{ tx.transactionId }}</td>
-          <td>{{ tx.fromAccount }}</td>
-          <td>{{ tx.toAccount }}</td>
-          <td>{{ tx.amount }}</td>
-          <td>{{ tx.transactionType }}</td>
-          <td>{{ tx.rewardsEarned }}</td>
-          <td>{{ tx.createdAt }}</td>
-        </tr>
-      </tbody>
-    </table>
+
+  <div class="history-panel">
+    <div class="history-header">
+      <div>
+        <p class="eyebrow">Overview</p>
+        <h2>Transaction History</h2>
+      </div>
+      <div class="history-summary">
+        <span class="summary-pill">{{ transactions.length }} Records</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span>Total Sent</span>
+        <strong>{{ totalAmount | currency:'USD':'symbol':'1.2-2' }}</strong>
+      </div>
+      <div class="stat-card">
+        <span>Rewards Earned</span>
+        <strong>{{ totalRewards }}</strong>
+      </div>
+      <div class="stat-card">
+        <span>Latest Activity</span>
+        <strong>{{ latestActivity }}</strong>
+      </div>
+    </div>
+
+    <div class="history-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Transaction ID</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Rewards</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!transactions.length">
+              <td colspan="8" class="empty-state">No transactions available yet.</td>
+            </tr>
+            <tr *ngFor="let tx of transactions">
+              <td>
+                <span class="tx-id">#{{ tx.transactionId }}</span>
+              </td>
+              <td>{{ tx.fromAccount }}</td>
+              <td>{{ tx.toAccount }}</td>
+              <td>
+                <span class="amount">${{ tx.amount }}</span>
+              </td>
+              <td>
+                <span class="type-badge" [ngClass]="getDirectionClass(tx)">{{ getDirectionLabel(tx) }}</span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(tx)">{{ getStatusLabel(tx) }}</span>
+              </td>
+              <td>{{ tx.rewardsEarned }}</td>
+              <td>{{ tx.createdAt }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

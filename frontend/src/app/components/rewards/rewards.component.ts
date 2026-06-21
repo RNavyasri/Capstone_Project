@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
@@ -13,7 +13,11 @@ export class RewardsComponent implements OnInit {
   rewardPoints = 0;
   lastUpdated = '';
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(
+    private api: ApiService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     const stored = sessionStorage.getItem('user');
@@ -27,9 +31,14 @@ export class RewardsComponent implements OnInit {
       next: (data) => {
         this.rewardPoints = data.rewardPoints;
         this.lastUpdated = data.lastUpdated;
+        // Force a render pass — same root cause as history.component:
+        // change detection isn't auto-triggered after this async response
+        // (zoneless config or zone-skipping HTTP call).
+        this.cdr.detectChanges();
       },
       error: () => {
         this.rewardPoints = 0;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -11,14 +11,14 @@
     </div>
 
     <form (ngSubmit)="submit()">
-      <label>From Account ID</label>
-      <input [(ngModel)]="senderId" name="senderId" type="number" placeholder="Enter sender account ID" />
+      <label>From Account</label>
+      <input [value]="senderId" name="senderId" type="text" placeholder="Logged-in account" readonly />
 
       <label>To Account ID</label>
-      <input [(ngModel)]="receiverId" name="receiverId" type="number" placeholder="Enter receiver account ID" />
+      <input [(ngModel)]="receiverId" name="receiverId" type="text" placeholder="Enter receiver account ID" />
 
-      <label>Amount</label>
-      <input [(ngModel)]="amount" name="amount" type="number" step="0.01" placeholder="0.00" />
+      <label>Amount (Rs.)</label>
+      <input [(ngModel)]="amount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter whole amount in Rs." />
 
       <label>Description</label>
       <textarea [(ngModel)]="description" name="description" rows="3" placeholder="Optional note for this transfer"></textarea>

@@ -36,44 +36,40 @@ public class TransactionController {
     public ResponseEntity<?> transfer(@RequestBody TransferRequest request) {
         Account sender = accountRepository.findById(request.getSenderId()).orElse(null);
         Account receiver = accountRepository.findById(request.getReceiverId()).orElse(null);
+        BigDecimal amount = request.getAmount() != null ? request.getAmount() : BigDecimal.ZERO;
 
         if (sender == null || receiver == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Invalid sender or receiver account"));
         }
-        if (sender.getStatus() == Account.Status.LOCKED) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the sender account is locked"));
+
+        if (sender.getStatus() == Account.Status.LOCKED || sender.getStatus() == Account.Status.CLOSED) {
+            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the sender account is not active"));
         }
-        if (receiver.getStatus() == Account.Status.CLOSED) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the receiver account is closed"));
+        if (receiver.getStatus() == Account.Status.LOCKED || receiver.getStatus() == Account.Status.CLOSED) {
+            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the receiver account is not active"));
         }
-        if (sender.getStatus() == Account.Status.CLOSED) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the sender account is closed"));
-        }
-        if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Amount must be greater than zero"));
         }
-        if (request.getAmount().compareTo(sender.getBalance()) > 0) {
+        if (amount.compareTo(sender.getBalance()) > 0) {
+            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer exceeds sender balance"));
         }
 
-        sender.setBalance(sender.getBalance().subtract(request.getAmount()));
-        receiver.setBalance(receiver.getBalance().add(request.getAmount()));
+        sender.setBalance(sender.getBalance().subtract(amount));
+        receiver.setBalance(receiver.getBalance().add(amount));
         accountRepository.save(sender);
         accountRepository.save(receiver);
 
         int rewards = 0;
-        if (request.getAmount().compareTo(BigDecimal.valueOf(99)) > 0) {
-            rewards = request.getAmount().divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN).intValue();
+        if (amount.compareTo(BigDecimal.valueOf(99)) > 0) {
+            rewards = amount.divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN).intValue();
         }
 
-        TransactionLog log = new TransactionLog();
-        log.setFromAccount(sender.getId());
-        log.setToAccount(receiver.getId());
-        log.setAmount(request.getAmount());
-        log.setTransactionType("TRANSFER");
-        log.setRewardsEarned(rewards);
-        log.setCreatedAt(LocalDateTime.now());
-        transactionLogRepository.save(log);
+        saveTransactionLog(sender, receiver, amount, "TRANSFER", rewards, "success");
 
         Reward reward = rewardRepository.findByUsername(sender.getUsername()).orElse(null);
         if (reward == null) {
@@ -87,6 +83,19 @@ public class TransactionController {
         rewardRepository.save(reward);
 
         return ResponseEntity.ok(new ApiResponse(true, "Transfer completed successfully"));
+    }
+
+    private void saveTransactionLog(Account sender, Account receiver, BigDecimal amount, String transactionType,
+                                    int rewardsEarned, String status) {
+        TransactionLog log = new TransactionLog();
+        log.setFromAccount(sender.getId());
+        log.setToAccount(receiver.getId());
+        log.setAmount(amount);
+        log.setTransactionType(transactionType);
+        log.setStatus((status == null || status.isBlank()) ? "failure" : status.trim().toLowerCase());
+        log.setRewardsEarned(rewardsEarned);
+        log.setCreatedAt(LocalDateTime.now());
+        transactionLogRepository.saveAndFlush(log);
     }
 
     @GetMapping("/{id}")

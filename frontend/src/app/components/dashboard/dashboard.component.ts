@@ -22,12 +22,28 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
     const user = JSON.parse(stored);
-    this.userName = user.username;
-    this.api.getAccount(user.id).subscribe({
-      next: (data) => this.account = data,
-      error: () => this.router.navigate(['/login'])
-    });
+    const accountId = Number(user?.id);
+
+    this.account = user as Account;
+    this.userName = user?.username || user?.accountHolderName || 'User';
+
+    if (!Number.isNaN(accountId)) {
+      this.api.getAccount(accountId).subscribe({
+        next: (data) => {
+          this.account = data;
+          if (!this.userName && data.username) {
+            this.userName = data.username;
+          }
+        },
+        error: () => {
+          this.account = user as Account;
+        }
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   logout() {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +12,7 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './transfer.component.html',
   styleUrls: ['./transfer.component.css']
 })
-export class TransferComponent {
+export class TransferComponent implements OnInit {
   senderId = '';
   receiverId = '';
   amount = '';
@@ -26,6 +26,18 @@ export class TransferComponent {
   dialogType: 'success' | 'error' = 'success';
 
   constructor(private api: ApiService, private router: Router) {}
+
+  ngOnInit() {
+    const storedUser = sessionStorage.getItem('user');
+
+    if (!storedUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const user = JSON.parse(storedUser);
+    this.senderId = String(user?.id || '');
+  }
 
   submit() {
     if (this.isSubmitting) {
@@ -45,14 +57,20 @@ export class TransferComponent {
       return;
     }
 
-    if (!Number.isFinite(senderId) || !Number.isFinite(receiverId) || !Number.isFinite(amount) || amount <= 0) {
-      this.message = 'Please enter valid transfer details';
+    if (!Number.isFinite(senderId) || !Number.isFinite(receiverId) || !Number.isFinite(amount) || !Number.isInteger(amount) || amount <= 0) {
+      this.message = 'Please enter a valid whole-number amount';
       this.isError = true;
       return;
     }
 
     if (senderId === receiverId) {
       this.message = 'Sender and receiver account cannot be the same';
+      this.isError = true;
+      return;
+    }
+
+    if (!this.senderId || Number(this.senderId) !== senderId) {
+      this.message = 'Your logged-in account could not be confirmed';
       this.isError = true;
       return;
     }
@@ -94,7 +112,6 @@ export class TransferComponent {
             res.message || 'The transfer was completed successfully.',
             'success'
           );
-          this.senderId = '';
           this.receiverId = '';
           this.amount = '';
           this.description = '';

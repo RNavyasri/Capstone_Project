@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg: #f5f8ff;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --surface-muted: #eef5ff;
+  --primary: #1d4ed8;
+  --primary-dark: #0f172a;
+  --primary-light: #dbeafe;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #dfe7f5;
+  --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.06), transparent 18%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, 'Segoe UI', Roboto, sans-serif;
+}
