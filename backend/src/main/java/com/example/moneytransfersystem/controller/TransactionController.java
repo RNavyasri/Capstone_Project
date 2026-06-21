@@ -43,19 +43,19 @@ public class TransactionController {
         }
 
         if (sender.getStatus() == Account.Status.LOCKED || sender.getStatus() == Account.Status.CLOSED) {
-            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            saveTransactionLog(sender, receiver, amount, "DEBIT", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the sender account is not active"));
         }
         if (receiver.getStatus() == Account.Status.LOCKED || receiver.getStatus() == Account.Status.CLOSED) {
-            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            saveTransactionLog(sender, receiver, amount, "DEBIT", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer is not possible because the receiver account is not active"));
         }
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            saveTransactionLog(sender, receiver, amount, "DEBIT", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Amount must be greater than zero"));
         }
         if (amount.compareTo(sender.getBalance()) > 0) {
-            saveTransactionLog(sender, receiver, amount, "TRANSFER", 0, "failure");
+            saveTransactionLog(sender, receiver, amount, "DEBIT", 0, "failure");
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Transfer exceeds sender balance"));
         }
 
@@ -69,7 +69,7 @@ public class TransactionController {
             rewards = amount.divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN).intValue();
         }
 
-        saveTransactionLog(sender, receiver, amount, "TRANSFER", rewards, "success");
+        saveTransactionLog(sender, receiver, amount, "DEBIT", rewards, "success");
 
         Reward reward = rewardRepository.findByUsername(sender.getUsername()).orElse(null);
         if (reward == null) {
@@ -100,6 +100,16 @@ public class TransactionController {
 
     @GetMapping("/{id}")
     public List<TransactionLog> getHistory(@PathVariable Long id) {
-        return transactionLogRepository.findByFromAccountOrToAccount(id, id);
+        return transactionLogRepository.findByFromAccountOrToAccount(id, id)
+                .stream()
+                .map(log -> {
+                    if (log.getFromAccount() != null && log.getFromAccount().equals(id)) {
+                        log.setTransactionType("DEBIT");
+                    } else if (log.getToAccount() != null && log.getToAccount().equals(id)) {
+                        log.setTransactionType("CREDIT");
+                    }
+                    return log;
+                })
+                .toList();
     }
 }

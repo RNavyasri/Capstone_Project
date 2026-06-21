@@ -15,7 +15,7 @@
     <div class="stats-row">
       <div class="stat-card">
         <span>Total Sent</span>
-        <strong>{{ totalAmount | currency:'USD':'symbol':'1.2-2' }}</strong>
+        <strong>{{ totalAmount }}</strong>
       </div>
       <div class="stat-card">
         <span>Rewards Earned</span>
@@ -36,7 +36,7 @@
               <th>From</th>
               <th>To</th>
               <th>Amount</th>
-              <th>Type</th>
+              <th>Transaction type</th>
               <th>Status</th>
               <th>Rewards</th>
               <th>Timestamp</th>
@@ -53,10 +53,10 @@
               <td>{{ tx.fromAccount }}</td>
               <td>{{ tx.toAccount }}</td>
               <td>
-                <span class="amount">${{ tx.amount }}</span>
+                <span class="amount">{{ tx.amount }}</span>
               </td>
               <td>
-                <span class="type-badge" [ngClass]="getDirectionClass(tx)">{{ getDirectionLabel(tx) }}</span>
+                <span class="type-badge" [ngClass]="getDirectionClass(tx)">{{ getTransactionTypeLabel(tx) }}</span>
               </td>
               <td>
                 <span class="status-badge" [ngClass]="getStatusClass(tx)">{{ getStatusLabel(tx) }}</span>

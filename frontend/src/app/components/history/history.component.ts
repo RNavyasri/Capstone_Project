@@ -77,6 +77,14 @@ export class HistoryComponent implements OnInit {
     return this.account?.id === tx.fromAccount ? 'Debit' : 'Credit';
   }
 
+  getTransactionTypeLabel(tx: TransactionLog): string {
+    const type = tx.transactionType?.toUpperCase();
+    if (type === 'DEBIT' || type === 'CREDIT') {
+      return type.charAt(0) + type.slice(1).toLowerCase();
+    }
+    return this.getDirectionLabel(tx);
+  }
+
   getDirectionClass(tx: TransactionLog): string {
     return this.account?.id === tx.fromAccount ? 'debit' : 'credit';
   }
