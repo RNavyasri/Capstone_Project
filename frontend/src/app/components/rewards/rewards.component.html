@@ -6,7 +6,7 @@
   <div class="rewards-card">
     <div class="reward-icon">🪙</div>
     <p class="eyebrow">Rewards</p>
-    <h2>{{ username }}</h2>
+    <h2 class="reward-title">{{ username }}</h2>
 
     <div class="points-panel">
       <span class="points-label">Available Points</span>
@@ -19,6 +19,13 @@
     <div class="reward-footer">
       <span>Last updated</span>
       <strong>{{ lastUpdated || 'Not available yet' }}</strong>
+    </div>
+
+    <div class="reward-rules">
+      <p><strong>Reward Rules</strong></p>
+      <p>• The transaction must be successful</p>
+      <p>• The sender must not send money to themselves</p>
+      <p>• The sender amount must be greater than 99</p>
     </div>
   </div>
 </div>

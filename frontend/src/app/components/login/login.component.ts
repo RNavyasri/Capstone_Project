@@ -18,24 +18,32 @@ export class LoginComponent {
   constructor(private api: ApiService, private router: Router) {}
 
   login() {
-    this.error = '';
-    if (!this.username || !this.password) {
+    const username = this.username.trim();
+    const password = this.password.trim();
+
+    if (!username && !password) {
       this.error = 'Please enter both username and password';
       return;
     }
-    if (this.password.length < 10 || !/[A-Z]/.test(this.password) || !/[0-9]/.test(this.password) || !/[!@#$%^&*(),.?":{}|<>]/.test(this.password)) {
-      this.error = 'Password must be at least 10 chars with 1 uppercase, 1 number, and 1 special character';
+    if (!username) {
+      this.error = 'Please enter username';
+      return;
+    }
+    if (!password) {
+      this.error = 'Please enter password';
       return;
     }
 
-    this.api.login(this.username, this.password).subscribe({
+    this.api.login(username, password).subscribe({
       next: (res) => {
+        this.error = '';
         const account = res.account;
         sessionStorage.setItem('user', JSON.stringify(account));
         this.router.navigate(['/dashboard']);
       },
-      error: () => {
-        this.error = 'Invalid username or password';
+      error: (err) => {
+        const message = err?.error?.message || err?.message || 'Invalid username or password';
+        this.error = message;
       }
     });
   }

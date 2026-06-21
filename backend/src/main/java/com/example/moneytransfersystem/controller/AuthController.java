@@ -24,9 +24,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Account account = accountRepository.findByUsername(request.getUsername()).orElse(null);
-        if (account == null || !isPasswordValid(request.getPassword(), account.getPassword())) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Invalid username or password"));
+        String username = request.getUsername() == null ? "" : request.getUsername().trim();
+        String password = request.getPassword() == null ? "" : request.getPassword();
+
+        if (username.isBlank() || password.isBlank()) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Please enter both username and password"));
+        }
+
+        Account account = accountRepository.findByUsername(username).orElse(null);
+        if (account == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Username not found"));
+        }
+        if (!isPasswordValid(password, account.getPassword())) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Incorrect password"));
         }
 
         return ResponseEntity.ok(Map.of(

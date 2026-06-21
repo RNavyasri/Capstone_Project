@@ -12,7 +12,7 @@
       <input [(ngModel)]="password" name="password" type="password" placeholder="Enter password" />
 
       <button type="submit">Login</button>
-      <p class="error" *ngIf="error">{{ error }}</p>
+      <p class="error" *ngIf="error" [attr.aria-live]="'polite'">{{ error }}</p>
     </form>
   </div>
 </div>

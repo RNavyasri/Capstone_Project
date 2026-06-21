@@ -58,6 +58,11 @@
   font-size: 1.8rem;
 }
 
+.reward-title {
+  font-size: 1.4rem;
+  margin: 0.2rem 0 0.8rem;
+}
+
 .points-panel {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: #fff;
@@ -110,6 +115,22 @@
 
 .reward-footer strong {
   color: var(--text);
+}
+
+.reward-rules {
+  margin-top: 1rem;
+  background: linear-gradient(180deg, #f8fbff, #eef5ff);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  text-align: left;
+}
+
+.reward-rules p {
+  margin: 0.35rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 @keyframes spin {
